@@ -2,57 +2,57 @@
 * @Author: Marte
 * @Date:   2017-12-27 09:44:38
 * @Last Modified by:   Marte
-* @Last Modified time: 2017-12-29 10:43:11
+* @Last Modified time: 2018-01-02 11:36:19
 */
 
 'use strict';
-
 /*直播流地址
  *fluid是否响应式
  *preload是否自动播放
  *'rtmp://live.hkstv.hk.lxdns.com/live/hks'
  *Player                         #视频播放器
  * PosterImage                #封面图片
- * TextTrackDisplay           #文本轨道显示（字幕，标题，章节标题）
- * TextTrackSettings          #文本轨道设置
- * LoadingSpinner             #加载指示
- * BigPlayButton              #大播放按钮
- * ErrorDisplay               #错误显示
- * ControlBar                 #控制工具栏
- *     PlayToggle             #播放暂停按钮
- *     FullscreenToggle       #全屏按钮
- *     CurrentTimeDisplay     #当前时间显示
- *     RemainingTimeDisplay   #剩余时间显示
- *     ProgressControl        #进度控制
- *         LoadProgressBar    #加载进度条
- *         PlayProgressBar    #已播放控制条
- *         MouseDisplay       #进度条上的鼠标位置显示
- *     VolumeControl          #音量控制
- *         VolumeBar          #音量控制条
- *             VolumeLevel    #音量
- *     MuteToggle             #静音按钮
- * MediaLoader                #视频加载器
+ * textTrackDisplay           #文本轨道显示（字幕，标题，章节标题）
+ * textTrackSettings          #文本轨道设置
+ * loadingSpinner             #加载指示
+ * bigPlayButton              #大播放按钮
+ * errorDisplay               #错误显示
+ * controlBar                 #控制工具栏
+ * playToggle             #播放暂停按钮
+ * fullscreenToggle       #全屏按钮
+ * currentTimeDisplay     #当前时间显示
+ * remainingTimeDisplay   #剩余时间显示
+ * progressControl        #进度控制
+ * loadProgressBar    #加载进度条
+ * playProgressBar    #已播放控制条
+ * mouseDisplay       #进度条上的鼠标位置显示
+ * volumeControl          #音量控制
+ * volumeBar          #音量控制条
+ * volumeLevel    #音量
+ * muteToggle             #静音按钮
+ * mediaLoader                #视频加载器
  **/
 
+// 引入css样式star
+// function addCssByLink(url){
+//     var doc=document;
+//     var link=doc.createElement("link");
+//     link.setAttribute("rel", "stylesheet");
+//     link.setAttribute("type", "text/css");
+//     link.setAttribute("href", url);
 
-function addCssByLink(url){
-    var doc=document;
-    var link=doc.createElement("link");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("type", "text/css");
-    link.setAttribute("href", url);
+//     var heads = doc.getElementsByTagName("head");
+//     if(heads.length)
+//         heads[0].appendChild(link);
+//     else
+//         doc.documentElement.appendChild(link);
+// }
 
-    var heads = doc.getElementsByTagName("head");
-    if(heads.length)
-        heads[0].appendChild(link);
-    else
-        doc.documentElement.appendChild(link);
-}
-addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
-
+// addCssByLink("http://openapi.9dcj.com/css/9d_ksplayer.min.css")
+// 引入css样式end
  var video_9d=function(container,params){
-        $(container).append("<video id='example-video'  class='video-js mobile-first-skin' controls  > <source src='' type='rtmp/flv'></video>");
         var s = this;
+        $(container).append("<video id='example-video'  class='video-js mobile-first-skin' controls  > <source src='' type='rtmp/flv'></video>");
         var defaults={
             url:null,
             url_roomid:null,
@@ -71,12 +71,18 @@ addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
             dataType: 'JSONP',
             jsonp:"callback",
             success:function(redata){
-                    s.vedio(redata.result.rtmp,redata.code);
-                    $('.img_bg').hide();
-                    // console.log(redata.code)
-            },
-            error: function(redata) {
-               alert(11)
+                // 只有播放器依赖件加载成功后再执行播放器实例化
+                // 动态引入js
+                 $.ajax({
+                    url: "http://openapi.9dcj.com/js/9d_ksplayer.min.js",
+                    type: 'GET',
+                    cache:true,
+                    dataType:"script",
+                    success: function(){
+                            s.vedio(redata.result.rtmp,redata.code);
+                            $('.img_bg').hide();
+                    }
+                });
             }
         })
         // 播放器的配置
@@ -84,7 +90,6 @@ addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
              if(b==200){
                 $('#example-video>source').attr('src',a);
              }
-             console.log(a)
             var player = ksplayer('example-video',{
                 language: 'zh-CN',
                 autoHeight: true,
@@ -137,9 +142,10 @@ addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
                 return { f: hasFlash, v: flashVersion };
             }
             var fls = flashChecker();
-            var s = "";
+            // var s = "";
             if (!fls.f){
-                $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="flashTiph()">×</div><p class="flash-tips-text">您尚未安装flash或者未开启，无法正常播放，请点击<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
+
+                $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="video_9d.prototype.flashTiph()">×</div><p class="flash-tips-text">您尚未安装flash或者未开启，无法正常播放，请点击<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
             } else{
 
             }
@@ -169,21 +175,21 @@ addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
                             // alert('安装了Flash');
                         }
                         catch(e){
-                        $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="flashTiph()">×</div><p  class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
+                        $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="video_9d.prototype.flashTiph()">×</div><p  class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
                         }
                     }
                     else {
                         try{
                             var swf2 = navigator.plugins['Shockwave Flash'];
                             if(swf2 == undefined && hasFlashs()==false){
-                            $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="flashTiph()">×</div>    <p class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
+                            $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="video_9d.prototype.flashTiph()">×</div>    <p class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
                             }
                             else {
                             // alert('安装了Flash');
                             }
                         }
                         catch(e){
-                            $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="flashTiph()">×</div>    <p class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
+                            $(a).append('<div class="flash-version-tips"><div class="flash-tips-cover"></div><div class="flash-tips-close" onclick="video_9d.prototype.flashTiph()">×</div>    <p class="flash-tips-text">您未安装flashplayer，无法观看直播！请点此下载<a href="https://www.adobe.com/go/getflashplayer" target="_blank" class="flash-get-link">安装 / 开启</a></p><p class="flash-tips-text">（安装完成后，请重启浏览器）</p></div>');
                         }
                     }
             }
@@ -191,34 +197,34 @@ addCssByLink("https://css.9dcj.com/Public/Kehu/css/ksplayer.min.css")
         /*ie的ActiveX没打开*/
         s.flashCreate(container);
         s.flashDetection(container);
-// 检测flash是否开启end
+        // 检测flash是否开启end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // 关闭提示开启flash的提示
+        video_9d.prototype.flashTiph=function(){
+           $('.flash-version-tips').fadeOut();
+        }
 
 
 
 
  }
-
-
 // 不需要配置的方法
-//关闭提示开启flash的提示
-function flashTiph(){
-            $('.flash-version-tips').fadeOut();
- }
+ video_9d.prototype.addCssByLink=function(url){
+    var doc=document;
+    var link=doc.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+    link.setAttribute("href", url);
 
-// console.log(video_9d.fun())
+    var heads = doc.getElementsByTagName("head");
+    if(heads.length)
+        heads[0].appendChild(link);
+    else
+        doc.documentElement.appendChild(link);
+ }
+video_9d.prototype.addCssByLink("http://openapi.9dcj.com/css/9d_ksplayer.min.css");
+
+
+// 控制台版权提示
+    console.log('www.9dcj.com'+'%c9度财经版权所有 ', 'background-image:-webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );color:transparent;-webkit-background-clip: text;font-size:3em;');
+
